@@ -1,0 +1,32 @@
+{
+  "name": "karma-electron-reporter",
+  "version": "1.0.0",
+  "description": "Beautiful GUI reporter for Karma",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/taskworld/karma-electron-reporter.git"
+  },
+  "keywords": [
+    "GUI",
+    "Karma",
+    "karma-plugin",
+    "karma-reporter"
+  ],
+  "author": "Thai Pangsakulyanont <thai.p@taskworld.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/taskworld/karma-electron-reporter/issues"
+  },
+  "homepage": "https://github.com/taskworld/karma-electron-reporter#readme",
+  "devDependencies": {
+    "karma": "^0.13.7"
+  },
+  "dependencies": {
+    "json-stream": "^1.0.0",
+    "rx": "^3.0.0"
+  }
+}
