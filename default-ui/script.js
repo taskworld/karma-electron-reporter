@@ -25,12 +25,20 @@ window.onRunComplete = function (browsers, results) {
 };
 
 
-var count川 = Rx.Observable.when(
-  runStart口.thenDo(() => () => 0),
-  specComplete口.thenDo(() => x => x + 1)
-)
-.startWith(0)
-.scan((x, f) => f(x));
+function countSpecs川(predicate) {
+
+  return Rx.Observable.when(
+    runStart口.thenDo(() => () => 0),
+    specComplete口.filter(predicate).thenDo(() => x => x + 1)
+  )
+  .startWith(0)
+  .scan((x, f) => f(x));
+}
+
+
+var count川    = countSpecs川(() => true);
+
+var skipped川  = countSpecs川(({ result }) => result.skipped);
 
 
 var className川 = Rx.Observable.when(
@@ -42,7 +50,10 @@ var className川 = Rx.Observable.when(
 .shareReplay(1);
 
 
-var text川 = count川.map(count => `Ran ${count} specs.`);
+var text川 = Rx.Observable.combineLatest(
+  count川, skipped川,
+  (count, skipped) => `Ran ${count - skipped} / ${count} specs.`
+);
 
 
 text川.subscribe(text => document.querySelector('#status').innerHTML = text);
