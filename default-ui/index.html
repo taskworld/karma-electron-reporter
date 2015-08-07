@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Karma</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <div class="Status" id="status"></div>
+  </main>
+  <script>
+    var fs = require('fs');
+    var babel = require('babel-core');
+    eval(babel.transformFileSync(require.resolve('./script.js')).code);
+  </script>
+</body>
+</html>

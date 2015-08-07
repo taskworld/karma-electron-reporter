@@ -6,6 +6,7 @@ var JSONStream    = require('json-stream')
 
 var subject = new Rx.Subject();
 var buffer  = [];
+var config  = JSON.parse(process.argv[2]);
 
 app.on('window-all-closed', function () {
 
@@ -16,7 +17,7 @@ process.stdin.pipe(new JSONStream().on('data', function (message) {
 
   subject.onNext(message);
 
-  if (message.topic === 'run:start') {
+  if (message.topic === 'onRunStart') {
     buffer.length = 0;
   }
   buffer.push(message);
@@ -24,24 +25,26 @@ process.stdin.pipe(new JSONStream().on('data', function (message) {
 
 app.on('ready', function() {
 
-  var mainWindow = new BrowserWindow({
-    width: 480,
-    height: 140,
-    transparent: true,
-    frame: false,
-    'always-on-top': true,
-  });
+  var mainWindow = new BrowserWindow(config.options);
 
   var pipe;
+
+  function execute (data) {
+
+    var f = window[data.topic];
+    if (typeof f === 'function') {
+      f.apply(this, data.arguments);
+    }
+  }
 
   function send (data) {
 
     var json = JSON.stringify(data);
-    var code = 'handleMessage(' + json + ')';
+    var code = 'void (' + execute + ')(' + json + ');';
     mainWindow.webContents.executeJavaScript(code);
   }
 
-  mainWindow.loadUrl('file://' + __dirname + '/index.html');
+  mainWindow.loadUrl(config.url);
 
   mainWindow.webContents.once('did-finish-load', function () {
 

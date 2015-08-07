@@ -23,10 +23,14 @@
   },
   "homepage": "https://github.com/taskworld/karma-electron-reporter#readme",
   "devDependencies": {
+    "babel-eslint": "^4.0.5",
+    "eslint": "^1.0.0",
     "karma": "^0.13.7"
   },
   "dependencies": {
+    "babel-core": "^5.8.21",
     "json-stream": "^1.0.0",
+    "lodash.defaultsdeep": "^3.10.0",
     "rx": "^3.0.0"
   }
 }

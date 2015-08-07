@@ -1,23 +1,41 @@
 
 var UI = require('./ui');
+var defaultsDeep = require('lodash.defaultsdeep');
 
 var ElectronReporter = function(helper, logger, config) {
 
-  var ui = UI();
+  config = defaultsDeep({ }, config, {
+    url:      'file://' + require.resolve('./default-ui/index.html'),
+    options:  {
+      width:            480,
+      height:           140,
+      transparent:      true,
+      frame:            false,
+      'always-on-top':  true,
+    }
+  })
+
+  var ui = UI(config);
 
   this.adapters = [];
 
-  this.onRunStart = function () {
-    ui.send({ topic: 'run:start' });
-  };
+  function bind(topic) {
 
-  this.onSpecComplete = function(browser, result) {
-    ui.send({ topic: 'spec:complete', browser: browser, result: result });
-  };
+    return function () {
 
-  this.onRunComplete = function(browsers, results) {
-    ui.send({ topic: 'run:complete', browsers: browsers, results: results });
-  };
+      ui.send({
+        topic:      topic,
+        arguments:  [].slice.call(arguments, 0, -1),
+      });
+    }
+  }
+
+  this.onRunStart       = bind('onRunStart');     // ()
+  this.onBrowserStart   = bind('onBrowserStart'); // (browser)
+  this.onBrowserError   = bind('onBrowserError'); // (browser, error)
+  this.onBrowserLog     = bind('onBrowserLog');   // (browser, log, type)
+  this.onSpecComplete   = bind('onSpecComplete'); // (browser, result)
+  this.onRunComplete    = bind('onRunComplete');  // (browsers, results)
 };
 
 ElectronReporter.$inject = ['helper', 'logger','config.electronReporter'];
